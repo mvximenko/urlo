@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Home() {
   let [longUrl, setLongUrl] = useState('');
   let [links, setLinks] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    if (localStorage.getItem('storedLinks')) {
+      const storedLinks = JSON.parse(localStorage.getItem('storedLinks')!);
+      setLinks(storedLinks);
+    }
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -17,7 +24,11 @@ export default function Home() {
         const {
           data: { shortUrl },
         } = await axios.post('api/shorten', { longUrl });
-        setLinks({ [shortUrl]: longUrl, ...links });
+
+        const storedLinks = { [shortUrl]: longUrl, ...links };
+        setLinks(storedLinks);
+        localStorage.setItem('storedLinks', JSON.stringify(storedLinks));
+
         setLongUrl('');
       } catch (error) {
         console.error(error);
@@ -25,7 +36,7 @@ export default function Home() {
     }
   };
 
-  const onShortUrlClick = (shortUrl: string) => {
+  const handleClick = (shortUrl: string) => {
     const url = `${window.location.hostname}/${shortUrl}`;
     navigator.clipboard.writeText(url).then(
       () => {
@@ -60,7 +71,7 @@ export default function Home() {
           return (
             <div key={short}>
               <div>{long}</div>
-              <div onClick={() => onShortUrlClick(short)}>
+              <div onClick={() => handleClick(short)}>
                 {`${window.location.hostname}/${short}`}
               </div>
             </div>
