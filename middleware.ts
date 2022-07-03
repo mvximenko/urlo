@@ -13,7 +13,7 @@ const getValidUrl = (link: string) => {
 export async function middleware(req: NextRequest) {
   const substr = req.nextUrl.pathname.substring(1);
 
-  if (substr.length && substr.match('^[A-Za-z0-9_-]*$')) {
+  if (substr && /^[A-Za-z0-9_-]*$/.test(substr)) {
     if (substr.length === 7) {
       const longUrl: string | null = await redis.hget('links', substr);
       if (longUrl) {

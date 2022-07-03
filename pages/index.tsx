@@ -5,18 +5,23 @@ export default function Home() {
   let [longUrl, setLongUrl] = useState('');
   let [links, setLinks] = useState<{ [key: string]: string }>({});
 
-  const handleClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-    try {
-      const {
-        data: { shortUrl },
-      } = await axios.post('api/shorten', { longUrl });
+    const regexp = new RegExp(
+      '^((http:\\/\\/|https:\\/\\/|)(www.|)[a-zA-Z0-9]+(\\.[a-zA-Z]+)+.*)$'
+    );
 
-      setLinks({ [shortUrl]: longUrl, ...links });
-      setLongUrl('');
-    } catch (error) {
-      console.error(error);
+    if (regexp.test(longUrl)) {
+      try {
+        const {
+          data: { shortUrl },
+        } = await axios.post('api/shorten', { longUrl });
+        setLinks({ [shortUrl]: longUrl, ...links });
+        setLongUrl('');
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -35,16 +40,19 @@ export default function Home() {
   return (
     <div>
       <h1>URLO</h1>
-      <div>
+
+      <form onSubmit={handleSubmit}>
         <h2>Create a short url</h2>
         <input
           type='text'
-          placeholder='Enter URL'
+          name='link'
           value={longUrl}
           onChange={(e) => setLongUrl(e.target.value)}
+          placeholder='Shorten your link'
+          required
         />
-        <button onClick={handleClick}>Shorten</button>
-      </div>
+        <button type='submit'>Shorten</button>
+      </form>
 
       <div>
         {Object.keys(links).map((short) => {
@@ -52,7 +60,6 @@ export default function Home() {
           return (
             <div key={short}>
               <div>{long}</div>
-
               <div onClick={() => onShortUrlClick(short)}>
                 {`${window.location.hostname}/${short}`}
               </div>
