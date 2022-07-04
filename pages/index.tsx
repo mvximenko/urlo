@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  Container,
+  Form,
+  ShortenButton,
+  Links,
+  LongLink,
+  ShortLink,
+  CopyButton,
+} from './_styles';
 
 export default function Home() {
   let [longUrl, setLongUrl] = useState('');
@@ -37,7 +46,7 @@ export default function Home() {
   };
 
   const handleClick = (shortUrl: string) => {
-    const url = `${window.location.hostname}/${shortUrl}`;
+    const url = `https://${window.location.hostname}/${shortUrl}`;
     navigator.clipboard.writeText(url).then(
       () => {
         console.log('Copied link to the clipboard');
@@ -49,11 +58,10 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <Container>
       <h1>URLO</h1>
 
-      <form onSubmit={handleSubmit}>
-        <h2>Create a short url</h2>
+      <Form onSubmit={handleSubmit}>
         <input
           type='text'
           name='link'
@@ -62,22 +70,27 @@ export default function Home() {
           placeholder='Shorten your link'
           required
         />
-        <button type='submit'>Shorten</button>
-      </form>
+        <ShortenButton type='submit'>Shorten</ShortenButton>
+      </Form>
 
-      <div>
+      <Links>
         {Object.keys(links).map((short) => {
           const long = links[short];
+
+          console.log(`${window.location.hostname}/${short}`);
           return (
-            <div key={short}>
-              <div>{long}</div>
-              <div onClick={() => handleClick(short)}>
-                {`${window.location.hostname}/${short}`}
-              </div>
-            </div>
+            <li key={short}>
+              <LongLink>{long}</LongLink>
+              <span>
+                <ShortLink
+                  href={short}
+                >{`${window.location.hostname}/${short}`}</ShortLink>
+                <CopyButton onClick={() => handleClick(short)}>Copy</CopyButton>
+              </span>
+            </li>
           );
         })}
-      </div>
-    </div>
+      </Links>
+    </Container>
   );
 }
