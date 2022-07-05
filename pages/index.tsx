@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import axios from 'axios';
 import {
-  Container,
+  TopSection,
+  Row,
+  LeftColumn,
+  RightColumn,
+  Heading,
+  Paragraph,
+  Section,
   Form,
   ShortenButton,
   Links,
   LongLink,
   ShortLink,
   CopyButton,
-} from './_styles';
+  BottomSection,
+  RepositoryHeading,
+  RepositoryButton,
+} from '../styles/styles';
 
 export default function Home() {
   let [longUrl, setLongUrl] = useState('');
@@ -58,39 +68,72 @@ export default function Home() {
   };
 
   return (
-    <Container>
-      <h1>URLO</h1>
+    <>
+      <TopSection>
+        <Heading>URLO</Heading>
 
-      <Form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          name='link'
-          value={longUrl}
-          onChange={(e) => setLongUrl(e.target.value)}
-          placeholder='Shorten your link'
-          required
-        />
-        <ShortenButton type='submit'>Shorten</ShortenButton>
-      </Form>
+        <Row>
+          <LeftColumn>
+            <Heading>Link shortening service</Heading>
+            <Paragraph>
+              You can make a short link from a long one for free using our
+              service
+            </Paragraph>
+          </LeftColumn>
 
-      <Links>
-        {Object.keys(links).map((short) => {
-          const long = links[short];
+          <RightColumn>
+            <Image
+              src='/illustration-working.svg'
+              alt='Link shortening service'
+              layout='fill'
+              objectFit='contain'
+            />
+          </RightColumn>
+        </Row>
+      </TopSection>
 
-          console.log(`${window.location.hostname}/${short}`);
-          return (
-            <li key={short}>
-              <LongLink>{long}</LongLink>
-              <span>
-                <ShortLink
-                  href={short}
-                >{`${window.location.hostname}/${short}`}</ShortLink>
-                <CopyButton onClick={() => handleClick(short)}>Copy</CopyButton>
-              </span>
-            </li>
-          );
-        })}
-      </Links>
-    </Container>
+      <Section>
+        <Form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            name='link'
+            value={longUrl}
+            onChange={(e) => setLongUrl(e.target.value)}
+            placeholder='Shorten your link'
+            required
+          />
+          <ShortenButton type='submit'>Shorten It!</ShortenButton>
+        </Form>
+
+        <Links>
+          {Object.keys(links).map((short) => {
+            const long = links[short];
+
+            return (
+              <li key={short}>
+                <LongLink>{long}</LongLink>
+                <span>
+                  <ShortLink
+                    href={short}
+                  >{`${window.location.hostname}/${short}`}</ShortLink>
+                  <CopyButton onClick={() => handleClick(short)}>
+                    Copy
+                  </CopyButton>
+                </span>
+              </li>
+            );
+          })}
+        </Links>
+      </Section>
+
+      <BottomSection>
+        <div>
+          <RepositoryHeading>Source Code</RepositoryHeading>
+          <RepositoryButton>
+            <a href='https://github.com/mvximenko/urlo'>GO TO REPOSITORY</a>
+          </RepositoryButton>
+        </div>
+      </BottomSection>
+    </>
   );
 }
