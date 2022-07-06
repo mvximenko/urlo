@@ -10,19 +10,24 @@ import {
   Paragraph,
   Section,
   Form,
+  Input,
   ShortenButton,
   Links,
+  ListItem,
+  RightSide,
   LongLink,
   ShortLink,
   CopyButton,
   BottomSection,
+  Repository,
   RepositoryHeading,
-  RepositoryButton,
+  RepositoryLink,
 } from '../styles/styles';
 
 export default function Home() {
-  let [longUrl, setLongUrl] = useState('');
-  let [links, setLinks] = useState<{ [key: string]: string }>({});
+  const [longUrl, setLongUrl] = useState('');
+  const [copied, setCopied] = useState<string[]>([]);
+  const [links, setLinks] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (localStorage.getItem('storedLinks')) {
@@ -59,7 +64,10 @@ export default function Home() {
     const url = `https://${window.location.hostname}/${shortUrl}`;
     navigator.clipboard.writeText(url).then(
       () => {
-        console.log('Copied link to the clipboard');
+        setCopied([shortUrl, ...copied]);
+        setTimeout(() => {
+          setCopied((prevState) => prevState.filter((url) => url !== shortUrl));
+        }, 2000);
       },
       () => {
         alert('Could not copy link to the clipboard');
@@ -87,6 +95,7 @@ export default function Home() {
               alt='Link shortening service'
               layout='fill'
               objectFit='contain'
+              priority={true}
             />
           </RightColumn>
         </Row>
@@ -94,7 +103,7 @@ export default function Home() {
 
       <Section>
         <Form onSubmit={handleSubmit}>
-          <input
+          <Input
             type='text'
             name='link'
             value={longUrl}
@@ -105,34 +114,40 @@ export default function Home() {
           <ShortenButton type='submit'>Shorten It!</ShortenButton>
         </Form>
 
-        <Links>
-          {Object.keys(links).map((short) => {
-            const long = links[short];
+        {Object.keys(links).length !== 0 && (
+          <Links>
+            {Object.keys(links).map((short) => {
+              const long = links[short];
+              return (
+                <ListItem key={short}>
+                  <LongLink>{long}</LongLink>
+                  <RightSide>
+                    <ShortLink href={short}>
+                      {`${window.location.hostname}/${short}`}
+                    </ShortLink>
 
-            return (
-              <li key={short}>
-                <LongLink>{long}</LongLink>
-                <span>
-                  <ShortLink
-                    href={short}
-                  >{`${window.location.hostname}/${short}`}</ShortLink>
-                  <CopyButton onClick={() => handleClick(short)}>
-                    Copy
-                  </CopyButton>
-                </span>
-              </li>
-            );
-          })}
-        </Links>
+                    {copied.includes(short) ? (
+                      <CopyButton copy>Copied</CopyButton>
+                    ) : (
+                      <CopyButton onClick={() => handleClick(short)}>
+                        Copy
+                      </CopyButton>
+                    )}
+                  </RightSide>
+                </ListItem>
+              );
+            })}
+          </Links>
+        )}
       </Section>
 
       <BottomSection>
-        <div>
+        <Repository>
           <RepositoryHeading>Source Code</RepositoryHeading>
-          <RepositoryButton>
-            <a href='https://github.com/mvximenko/urlo'>GO TO REPOSITORY</a>
-          </RepositoryButton>
-        </div>
+          <RepositoryLink href='https://github.com/mvximenko/urlo'>
+            GO TO REPOSITORY
+          </RepositoryLink>
+        </Repository>
       </BottomSection>
     </>
   );

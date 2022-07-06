@@ -92,26 +92,26 @@ export const Section = styled.section`
 export const Form = styled.form`
   display: flex;
 
-  input {
-    flex: 1;
-    height: 60px;
-    font-size: 20px;
-    outline-color: #2acfcf;
-    border-radius: 8px;
-    margin-right: 2%;
-    padding: 18px 20px;
-    border: none;
-  }
-
   ${mobile} {
     flex-direction: column;
+  }
+`;
 
-    input {
-      flex: none;
-      height: 50px;
-      font-size: 16px;
-      margin: 0 0 10px 0;
-    }
+export const Input = styled.input`
+  flex: 1;
+  height: 60px;
+  font-size: 20px;
+  outline-color: #2acfcf;
+  border-radius: 8px;
+  margin-right: 2%;
+  padding: 18px 20px;
+  border: none;
+
+  ${mobile} {
+    flex: none;
+    height: 50px;
+    font-size: 16px;
+    margin: 0 0 10px 0;
   }
 `;
 
@@ -143,27 +143,33 @@ export const Links = styled.ul`
   border-radius: 6px;
   background: white;
   color: #1d1f21;
+`;
 
-  li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 0 5px;
-    padding: 16px 20px;
-  }
+export const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 5px;
+  padding: 16px 20px;
 
-  li + li {
+  & + & {
     border-top: 2px solid #e8e9eb;
   }
 
   ${mobile} {
-    li {
-      align-items: normal;
-      flex-direction: column;
-      justify-content: normal;
-    }
+    align-items: normal;
+    flex-direction: column;
+    justify-content: normal;
+  }
+`;
 
-    span:nth-child(2) {
+export const RightSide = styled.span`
+  display: flex;
+  align-items: center;
+
+  ${mobile} {
+    align-items: flex-start;
+    &:nth-child(2) {
       ${column}
     }
   }
@@ -179,17 +185,23 @@ export const LongLink = styled.span`
 `;
 
 export const ShortLink = styled.a`
-  padding-right: 25px;
+  margin-right: 25px;
   font-size: 18px;
   color: #2acfcf;
+  transition: color 100ms linear;
+
+  &:hover {
+    color: #9be3e2;
+  }
 
   ${mobile} {
     padding: 6px 0;
   }
 `;
 
-export const CopyButton = styled.span`
-  padding: 9.6px 20px;
+export const CopyButton = styled.button<{ copy?: boolean }>`
+  width: 100px;
+  padding: 12px 20px;
   color: white;
   background: #2acfcf;
   border-radius: 6px;
@@ -200,6 +212,13 @@ export const CopyButton = styled.span`
 
   &:hover {
     background: #9be3e2;
+  }
+
+  ${({ copy }) =>
+    copy && `background: #649949; &:hover { background: #649949; }`}
+
+  ${mobile} {
+    width: 100%;
   }
 `;
 
@@ -219,11 +238,11 @@ export const BottomSection = styled.section`
     height: 50%;
     background-image: url('/bg-mobile.svg');
   }
+`;
 
-  div {
-    display: flex;
-    flex-direction: column;
-  }
+export const Repository = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const RepositoryHeading = styled.h1`
@@ -232,12 +251,11 @@ export const RepositoryHeading = styled.h1`
   font-size: 46px;
 
   ${mobile} {
-    font-size: 28px;
+    font-size: 32px;
   }
 `;
 
-export const RepositoryButton = styled.span`
-  width: 100%;
+export const RepositoryLink = styled.a`
   padding: 20px;
   background: #2bd1d1;
   transition: background 100ms linear;
@@ -252,6 +270,7 @@ export const RepositoryButton = styled.span`
   }
 
   ${mobile} {
+    padding: 15px;
     font-size: 16px;
   }
 `;
