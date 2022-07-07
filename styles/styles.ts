@@ -105,7 +105,11 @@ export const Input = styled.input`
   border-radius: 8px;
   margin-right: 2%;
   padding: 18px 20px;
-  border: none;
+  /* border: 2px solid #2acfcf; */
+
+  &:invalid:focus {
+    outline-color: #e39b9c;
+  }
 
   ${mobile} {
     flex: none;
@@ -134,6 +138,10 @@ export const ShortenButton = styled.button`
     height: 50px;
     font-size: 16px;
   }
+`;
+
+export const Alert = styled.div`
+  background: red;
 `;
 
 export const Links = styled.ul`

@@ -24,10 +24,18 @@ import {
   RepositoryLink,
 } from '../styles/styles';
 
+interface Links {
+  shortUrl: string;
+  longUrl: string;
+}
+
+const regExpression =
+  '^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,3}(:[0-9]{1,5})?(/.*)?$';
+
 export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [copied, setCopied] = useState<string[]>([]);
-  const [links, setLinks] = useState<{ [key: string]: string }>({});
+  const [links, setLinks] = useState<Links[]>([]);
 
   useEffect(() => {
     if (localStorage.getItem('storedLinks')) {
@@ -39,24 +47,18 @@ export default function Home() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const regexp = new RegExp(
-      '^((http:\\/\\/|https:\\/\\/|)(www.|)[a-zA-Z0-9]+(\\.[a-zA-Z]+)+.*)$'
-    );
+    try {
+      const {
+        data: { shortUrl },
+      } = await axios.post('api/shorten', { longUrl });
 
-    if (regexp.test(longUrl)) {
-      try {
-        const {
-          data: { shortUrl },
-        } = await axios.post('api/shorten', { longUrl });
+      const storedLinks = [{ shortUrl, longUrl }, ...links.slice(0, 2)];
+      setLinks(storedLinks);
+      localStorage.setItem('storedLinks', JSON.stringify(storedLinks));
 
-        const storedLinks = { [shortUrl]: longUrl, ...links };
-        setLinks(storedLinks);
-        localStorage.setItem('storedLinks', JSON.stringify(storedLinks));
-
-        setLongUrl('');
-      } catch (error) {
-        console.error(error);
-      }
+      setLongUrl('');
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -104,32 +106,37 @@ export default function Home() {
       <Section>
         <Form onSubmit={handleSubmit}>
           <Input
-            type='text'
             name='link'
             value={longUrl}
-            onChange={(e) => setLongUrl(e.target.value)}
+            onChange={(e) => {
+              setLongUrl(e.target.value);
+              (e.target as HTMLInputElement).setCustomValidity('');
+            }}
+            onInvalid={(e) =>
+              (e.target as HTMLInputElement).setCustomValidity('Not valid link')
+            }
+            pattern={regExpression}
             placeholder='Shorten your link'
             required
           />
           <ShortenButton type='submit'>Shorten It!</ShortenButton>
         </Form>
 
-        {Object.keys(links).length !== 0 && (
+        {links.length !== 0 && (
           <Links>
-            {Object.keys(links).map((short) => {
-              const long = links[short];
+            {links.map((link) => {
               return (
-                <ListItem key={short}>
-                  <LongLink>{long}</LongLink>
+                <ListItem key={link.shortUrl}>
+                  <LongLink>{link.longUrl}</LongLink>
                   <RightSide>
-                    <ShortLink href={short}>
-                      {`${window.location.hostname}/${short}`}
+                    <ShortLink href={link.shortUrl}>
+                      {`${window.location.hostname}/${link.shortUrl}`}
                     </ShortLink>
 
-                    {copied.includes(short) ? (
+                    {copied.includes(link.shortUrl) ? (
                       <CopyButton copy>Copied</CopyButton>
                     ) : (
-                      <CopyButton onClick={() => handleClick(short)}>
+                      <CopyButton onClick={() => handleClick(link.shortUrl)}>
                         Copy
                       </CopyButton>
                     )}
