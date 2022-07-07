@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import {
-  TopSection,
+  Section,
   Row,
   LeftColumn,
   RightColumn,
   Heading,
   Paragraph,
-  Section,
+  Background,
+  MiddleSection,
   Form,
   Input,
   ShortenButton,
@@ -79,7 +80,7 @@ export default function Home() {
 
   return (
     <>
-      <TopSection>
+      <Section>
         <Heading>URLO</Heading>
 
         <Row>
@@ -101,52 +102,56 @@ export default function Home() {
             />
           </RightColumn>
         </Row>
-      </TopSection>
-
-      <Section>
-        <Form onSubmit={handleSubmit}>
-          <Input
-            name='link'
-            value={longUrl}
-            onChange={(e) => {
-              setLongUrl(e.target.value);
-              (e.target as HTMLInputElement).setCustomValidity('');
-            }}
-            onInvalid={(e) =>
-              (e.target as HTMLInputElement).setCustomValidity('Not valid link')
-            }
-            pattern={regExpression}
-            placeholder='Shorten your link'
-            required
-          />
-          <ShortenButton type='submit'>Shorten It!</ShortenButton>
-        </Form>
-
-        {links.length !== 0 && (
-          <Links>
-            {links.map((link) => {
-              return (
-                <ListItem key={link.shortUrl}>
-                  <LongLink>{link.longUrl}</LongLink>
-                  <RightSide>
-                    <ShortLink href={link.shortUrl}>
-                      {`${window.location.hostname}/${link.shortUrl}`}
-                    </ShortLink>
-
-                    {copied.includes(link.shortUrl) ? (
-                      <CopyButton copy>Copied</CopyButton>
-                    ) : (
-                      <CopyButton onClick={() => handleClick(link.shortUrl)}>
-                        Copy
-                      </CopyButton>
-                    )}
-                  </RightSide>
-                </ListItem>
-              );
-            })}
-          </Links>
-        )}
       </Section>
+
+      <Background>
+        <MiddleSection>
+          <Form onSubmit={handleSubmit}>
+            <Input
+              name='link'
+              value={longUrl}
+              onChange={(e) => {
+                setLongUrl(e.target.value);
+                (e.target as HTMLInputElement).setCustomValidity('');
+              }}
+              onInvalid={(e) =>
+                (e.target as HTMLInputElement).setCustomValidity(
+                  'Not valid link'
+                )
+              }
+              pattern={regExpression}
+              placeholder='Shorten your link'
+              required
+            />
+            <ShortenButton type='submit'>Shorten It!</ShortenButton>
+          </Form>
+
+          {links.length !== 0 && (
+            <Links>
+              {links.map((link) => {
+                return (
+                  <ListItem key={link.shortUrl}>
+                    <LongLink>{link.longUrl}</LongLink>
+                    <RightSide>
+                      <ShortLink href={link.shortUrl}>
+                        {`${window.location.hostname}/${link.shortUrl}`}
+                      </ShortLink>
+
+                      {copied.includes(link.shortUrl) ? (
+                        <CopyButton copy>Copied</CopyButton>
+                      ) : (
+                        <CopyButton onClick={() => handleClick(link.shortUrl)}>
+                          Copy
+                        </CopyButton>
+                      )}
+                    </RightSide>
+                  </ListItem>
+                );
+              })}
+            </Links>
+          )}
+        </MiddleSection>
+      </Background>
 
       <BottomSection>
         <Repository>

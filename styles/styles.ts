@@ -7,11 +7,27 @@ const column = css`
   flex-direction: column;
 `;
 
-export const TopSection = styled.section`
-  margin: 0 14%;
+export const Section = styled.section`
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
 
-  ${mobile} {
-    margin: 0 5%;
+  @media (min-width: 576px) {
+    max-width: 540px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1170px;
   }
 `;
 
@@ -29,8 +45,8 @@ export const Row = styled.div`
 
 export const LeftColumn = styled.div`
   ${column}
-  width: 50%;
-  margin-right: 15px;
+  width: 70%;
+  margin-right: 30px;
   justify-content: center;
 
   ${mobile} {
@@ -42,29 +58,18 @@ export const LeftColumn = styled.div`
 
 export const RightColumn = styled.div`
   width: 50%;
-  margin-left: 15px;
   position: relative;
   user-select: none;
-
-  img {
-    object-position: right;
-  }
 
   ${mobile} {
     width: 100%;
     height: 100%;
-    margin-left: 0;
-
-    img {
-      object-position: center;
-    }
   }
 `;
 
 export const Heading = styled.h1`
-  width: 100%;
   font-size: 46px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 
   ${mobile} {
     font-size: 28px;
@@ -77,16 +82,15 @@ export const Paragraph = styled.p`
   font-weight: 500;
 `;
 
-export const Section = styled.section`
-  padding: 20px 14%;
+export const Background = styled.div`
+  background: #3b3054;
+`;
+
+export const MiddleSection = styled(Section)`
+  padding-top: 20px;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
-  background: #3b3054;
-
-  ${mobile} {
-    padding: 20px 5%;
-    flex-direction: column;
-  }
 `;
 
 export const Form = styled.form`
@@ -105,7 +109,6 @@ export const Input = styled.input`
   border-radius: 8px;
   margin-right: 2%;
   padding: 18px 20px;
-  /* border: 2px solid #2acfcf; */
 
   &:invalid:focus {
     outline-color: #e39b9c;
@@ -138,10 +141,6 @@ export const ShortenButton = styled.button`
     height: 50px;
     font-size: 16px;
   }
-`;
-
-export const Alert = styled.div`
-  background: red;
 `;
 
 export const Links = styled.ul`
