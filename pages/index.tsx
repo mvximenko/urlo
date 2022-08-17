@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import Image from 'next/image';
 import axios from 'axios';
 import {
@@ -80,6 +81,11 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>URLO</title>
+        <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+      </Head>
+
       <Section>
         <Heading>URLO</Heading>
 
